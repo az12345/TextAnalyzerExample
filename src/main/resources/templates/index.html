@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+Введите в форму полный путь к файлу для проверки
+<form method="post" action="/parsing">
+    <input type="text" name="path"/>
+    <input type="submit" name="brackets" value="brackets"/>
+    <input type="submit" name="words" value="words"/>
+</form>
+<span th:text="${s}"></span>
+<div th:if="${not #lists.isEmpty(list)}">
+<table>
+    <thead> … </thead>
+    <tbody>
+    <tr th:each="word: ${list}">
+        <td th:text="${word}"></td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</body>
+</html>
