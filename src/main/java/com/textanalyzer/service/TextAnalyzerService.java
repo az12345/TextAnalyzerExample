@@ -66,7 +66,7 @@ public class TextAnalyzerService {
         }
         return String.valueOf(map);
     }
-    public List readFile(String file) throws IOException {
+    public List<String> readFile(String file) throws IOException {
 
         BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(new FileInputStream(new File(file))));
         String f;
@@ -93,10 +93,10 @@ public class TextAnalyzerService {
                 return b.getValue() - a.getValue();
             }
         });
-        ArrayList newList = new ArrayList();
+        ArrayList<String> newList = new ArrayList();
         if(list.size()>10){
             for(int i = 0; i<10; i++){
-                newList.add(list.get(i));
+                newList.add(String.valueOf(list.get(i)));
             }return newList;
         }
         return list;

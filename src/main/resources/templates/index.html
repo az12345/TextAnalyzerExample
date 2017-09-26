@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript" ></script>
 </head>
 <body>
+<form id="downloadFile">
+    <input type="file" name="file" />
+    <input type="button" value="upload"/>
+</form>
+
+<span id="upload-file-message" th:text="${words}"></span>
+
 Введите в форму полный путь к файлу для проверки
 <form method="post" action="/parsing">
     <input type="text" name="path"/>
@@ -12,15 +22,110 @@
     <input type="submit" name="words" value="words"/>
 </form>
 <span th:text="${s}"></span>
-<div th:if="${not #lists.isEmpty(list)}">
-<table>
-    <thead> … </thead>
-    <tbody>
-    <tr th:each="word: ${list}">
-        <td th:text="${word}"></td>
-    </tr>
-    </tbody>
-</table>
+
+<div th:if="${not #lists.isEmpty(listFiles)}">
+    <table>
+        <thead> … </thead>
+        <tbody>
+        <tr th:each="file: ${listFiles}">
+            <td th:text="${file}"></td>
+            <!--<td><a th:href="${'/words/'+file}">wordStat</a> </td>-->
+            <td> <button th:id="bracketid" th:value="${file}">brackets</button></td>
+            <!--<td><a th:href="${'/brackets/'+file}">brackets</a></td>-->
+            <td> <button th:id="wordsid" th:value="${file}">words</button></td>
+        </tr>
+        </tbody>
+    </table>
+    <span th:id="${brackets}"></span>
+    <span th:id="${wordsajax}"></span>
+    <span id="b"></span>
+    <span id="w"></span>
 </div>
+<form id="formajax">
+    <input id="inputname" type="text"/>
+    <button type="button" id="showname">showname</button>
+    <span id="showbyname"></span>
+</form>
+
+<script>
+    $(document).ready(function () {
+      $("#downloadFile").on("click", uploadFile);
+      $("#formajax").on("click", showAjaxwords);
+      $("#wordsid").on("click", wordsajaxclick);
+    });
+    function wordsajaxclick(){
+        var word = this.value;
+        $.ajax({
+          url: "/words/"+word,
+            type: "GET",
+            dataType: "text",
+            success: function(data){
+              $("#wordsajax").text(data);
+            },
+            error: function(){
+                $("#wordsajax").text("Error");
+            }
+
+
+        });
+    }
+    function showAjaxwords(){
+        var w = $('#inputname').val();
+        $.ajax({
+          url:'/api/words/' + w,
+            type: 'GET',
+            dataType: 'text',
+            success: function (data){
+              $("#showbyname").text(data);
+            },
+            error: function (){
+                $("#showbyname").text("Error");
+            }
+        });
+    }
+    function uploadFile() {
+        $.ajax({
+            url:"/api/upload",
+            type: "POST",
+            data: new FormData($("#downloadFile")[0]),
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cashe: false,
+
+            success: function (data) {
+                $("#upload-file-message").text(data);
+            },
+            error: function(){
+                $("#upload-file-message").text("Error");
+            }
+
+        });
+    }
+
+//    function showBrackets(){
+//        var name = $("#bracketf").val();
+//        $.ajax({
+//            url:'/api/brackets/1',
+//            type: "GET",
+//            dataType: 'text',
+//            success: function (data) {
+//                $("#b").text(data);
+//            }
+//        });
+//    }
+//    function showWords(){
+//        var words = $("#wordsf").val();
+//        $.ajax({
+//            url:words,
+//            type: "GET",
+//            dataType: 'text',
+//            success: function (data) {
+//                $("#w").text(data)
+//            }
+//        });
+//    }
+</script>
+
 </body>
 </html>
