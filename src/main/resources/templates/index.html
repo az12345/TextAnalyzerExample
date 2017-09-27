@@ -30,9 +30,9 @@
         <tr th:each="file: ${listFiles}">
             <td th:text="${file}"></td>
             <!--<td><a th:href="${'/words/'+file}">wordStat</a> </td>-->
-            <td> <button th:id="bracketid" th:value="${file}">brackets</button></td>
+            <td> <button th:class="brackets" th:id="${file}" th:value="${file}">brackets</button></td>
             <!--<td><a th:href="${'/brackets/'+file}">brackets</a></td>-->
-            <td> <button th:id="wordsid" th:value="${file}">words</button></td>
+            <td> <button th:id="${file}" th:class="wordstat" th:value="${file}">words</button></td>
         </tr>
         </tbody>
     </table>
@@ -51,22 +51,37 @@
     $(document).ready(function () {
       $("#downloadFile").on("click", uploadFile);
       $("#formajax").on("click", showAjaxwords);
-      $("#wordsid").on("click", wordsajaxclick);
+      $(':button.wordstat').on("click", wordsajaxclick);
+      $(':button.brackets').on("click", bracketsajaxclick);
     });
-    function wordsajaxclick(){
-        var word = this.value;
+    function  bracketsajaxclick(){
+        var property = $(this).prop("value");
+        var example = property.split('.');
         $.ajax({
-          url: "/words/"+word,
+            url: '/api/brackets/' + example[0],
             type: "GET",
             dataType: "text",
-            success: function(data){
-              $("#wordsajax").text(data);
+            success: function (data){
+                $("#showbyname").text(data);
             },
-            error: function(){
-                $("#wordsajax").text("Error");
+            error: function (){
+                $("#showbyname").text("Error");
             }
-
-
+        });
+    }
+    function wordsajaxclick(){
+        var property = $(this).prop("value");
+        var example = property.split('.');
+        $.ajax({
+            url: '/api/words/' + example[0],
+            type: "GET",
+            dataType: "text",
+            success: function (data){
+                $("#showbyname").text(data);
+            },
+            error: function (){
+                $("#showbyname").text("Error");
+            }
         });
     }
     function showAjaxwords(){
